@@ -34,10 +34,7 @@ class CustomTheme {
           fontWeight: FontWeight.bold,
           color: colorScheme.onPrimary,
         ),
-        iconTheme: IconThemeData(
-          color: colorScheme.onPrimary,
-          size: 36,
-        ),
+        iconTheme: IconThemeData(color: colorScheme.onPrimary, size: 36),
       ),
       cardTheme: CardThemeData(
         color: colorScheme.secondaryContainer,
@@ -60,10 +57,7 @@ class CustomTheme {
           fontWeight: FontWeight.bold,
           color: colorSchemeDark.primary,
         ),
-        iconTheme: IconThemeData(
-          color: colorScheme.onPrimary,
-          size: 36,
-        ),
+        iconTheme: IconThemeData(color: colorScheme.onPrimary, size: 36),
       ),
       cardTheme: CardThemeData(
         color: colorSchemeDark.secondaryContainer,

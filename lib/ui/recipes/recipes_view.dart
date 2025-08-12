@@ -1,4 +1,4 @@
-import 'package:app4_receitas/di/service_locator.dart';
+import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/ui/recipes/recipes_viewmodel.dart';
 import 'package:app4_receitas/ui/widgets/recipe_card.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,7 @@ class RecipesView extends StatefulWidget {
 }
 
 class _RecipesViewState extends State<RecipesView> {
-
-  final viewModel = getIt<RecipesViewModel>();
+  final viewModel = getIt<RecipesViewmodel>();
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _RecipesViewState extends State<RecipesView> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (viewModel.isLoading) {
+      if (viewModel.isloading) {
         return Center(
           child: SizedBox(
             height: 96,
@@ -65,8 +64,7 @@ class _RecipesViewState extends State<RecipesView> {
         child: Column(
           children: [
             Expanded(
-              child:
-              viewModel.recipes.isNotEmpty
+              child: viewModel.recipes.isNotEmpty
                   ? Center(
                       child: Column(
                         children: [
@@ -165,8 +163,7 @@ class _RecipesViewState extends State<RecipesView> {
                         ],
                       ),
                     )
-                  :
-                  Center(
+                  : Center(
                       child: Column(
                         children: [
                           const SizedBox(height: 64),
