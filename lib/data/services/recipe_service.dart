@@ -4,29 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class RecipeService {
   final SupabaseClient _supabaseClient = getIt<SupabaseClient>();
 
-  // Adicionar favoritos
-  Future<void> addFavorite({
-    required String userId,
-    required String recipeId,
-  }) async {
-    await _supabaseClient.from('favorites').insert({
-      'user_id': userId,
-      'recipe_id': recipeId,
-    });
-  }
-
-  // Remover favoritos
-  Future<void> removeFavorite({
-    required String userId,
-    required String recipeId,
-  }) async {
-    await _supabaseClient
-        .from('favorites')
-        .delete()
-        .eq('user_id', userId)
-        .eq('recipe_id', recipeId);
-  }
-
   Future<List<Map<String, dynamic>>> fetchRecipes() async {
     return await _supabaseClient
         .from('recipes')
@@ -40,27 +17,43 @@ class RecipeService {
 
   Future<List<Map<String, dynamic>>> fetchFavRecipes(String userId) async {
     return await _supabaseClient
-        .from('favorites')
-        .select(''' 
+      .from('favorites')
+      .select('''
         recipes(
-        id,
-        name,
-        ingredients,
-        instructions,
-        prep_time_minutes,
-        cook_time_minutes,
-        servings,
-        difficulty,
-        cuisine,
-        calories_per_serving,
-        tags,
-        user_id,
-        image,
-        rating,
-        review_count,
-        meal_type
+          id,
+          name,
+          ingredients,
+          instructions,
+          prep_time_minutes,
+          cook_time_minutes,
+          servings,
+          difficulty,
+          cuisine,
+          calories_per_serving,
+          tags,
+          user_id,
+          image,
+          rating,
+          review_count,
+          meal_type
         )
-        ''')
+      ''')
+      .eq('user_id', userId);
+  }
+
+  Future<void> insertFavRecipe(String recipeId, String userId) async {
+    await _supabaseClient.from('favorites').insert({
+      'recipe_id': recipeId,
+      'user_id': userId,
+    });
+  }
+
+  Future<void> deleteFavRecipe(String recipeId, String userId) async {
+    await _supabaseClient
+        .from('favorites')
+        .delete()
+        .eq('recipe_id', recipeId)
         .eq('user_id', userId);
   }
+
 }

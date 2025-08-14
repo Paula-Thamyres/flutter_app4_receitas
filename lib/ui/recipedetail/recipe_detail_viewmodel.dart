@@ -1,66 +1,89 @@
 import 'package:app4_receitas/data/di/service_locator.dart';
-import 'package:get/get.dart';
 import 'package:app4_receitas/data/models/recipe.dart';
 import 'package:app4_receitas/data/repositories/recipe_repository.dart';
-import 'package:app4_receitas/ui/favorites/fav_recipes_viewmodel.dart';
+import 'package:get/get.dart';
 
 class RecipeDetailViewModel extends GetxController {
-  final _repo = getIt<RecipeRepository>();
+  final _repository = getIt<RecipeRepository>();
 
-  final _isLoading = false.obs;
-  final _errorMessage = ''.obs;
-  final _isFavorite = false.obs;
+  // Estados
+  final Rxn<Recipe> _recipe = Rxn<Recipe>();
+  final RxBool _isLoading = false.obs;
+  final RxString _errorMessage = ''.obs;
+  final RxBool _isFavorite = false.obs;
 
-  bool _busy = false;
-  Recipe? recipe;
-
-  bool get isloading => _isLoading.value;
-  String get errorMessage => _errorMessage.value;
+  // Getters
+  Recipe? get recipe => _recipe.value;
+  bool get isLoading => _isLoading.value;
+  String? get errorMessage => _errorMessage.value;
   bool get isFavorite => _isFavorite.value;
 
   Future<void> loadRecipe(String id) async {
-    _isLoading.value = true;
-    _errorMessage.value = '';
     try {
-      recipe = await _repo.getRecipeById(id);
+      _isLoading.value = true;
+      _errorMessage.value = '';
+      _recipe.value = await _repository.getRecipeById(id);
+      // TODO: Como obter o userId do usuário atual?
+      final userId = recipe!.userId;
+      _isFavorite.value = await isRecipeFavorite(id, userId);
     } catch (e) {
-      _errorMessage.value = e.toString();
+      _errorMessage.value = 'Falha ao buscar receita: ${e.toString()}';
     } finally {
       _isLoading.value = false;
     }
   }
 
-  Future<void> checkIfFavorite(String userId) async {
-    if (recipe == null) return;
+  Future<bool> isRecipeFavorite(String recipeId, String userId) async {
     try {
-      final favs = await _repo.getFavRecipes(userId);
-      _isFavorite.value = favs.any((r) => r.id == recipe!.id);
-    } catch (_) {
-      _isFavorite.value = false;
+      _isLoading.value = true;
+      _errorMessage.value = '';
+      final favRecipes = await _repository.getFavRecipes(userId);
+      return favRecipes.any((recipe) => recipe.id == recipeId);
+    } catch (e) {
+      _errorMessage.value = 'Falha ao buscar receita favorita: ${e.toString()}';
+    } finally {
+      _isLoading.value = false;
+    }
+    return false;
+  }
+
+  Future<void> toggleFavorite() async {
+    // TODO: Como obter o userId do usuário atual?
+    final currentUserId = recipe!.userId;
+    final recipeId = recipe!.id;
+
+    if (_isFavorite.value) {
+      await removeFromFavorites(recipeId, currentUserId);
+    } else {
+      await addToFavorites(recipeId, currentUserId);
     }
   }
 
-  Future<void> toggleFavorite(String userId) async {
-    if (recipe == null || _busy) return;
-    _busy = true;
-
-    final favVm = getIt<FavRecipesViewModel>();
-    await favVm.init(userId);
-
+  Future<void> addToFavorites(String recipeId, String userId) async {
     try {
-      if (_isFavorite.value) {
-        await _repo.removeFavorite(userId, recipe!.id);
-        favVm.removeLocal(recipe!.id);
-        _isFavorite.value = false;
-      } else {
-        await _repo.addFavorite(userId, recipe!.id);
-        favVm.addLocal(recipe!);
-        _isFavorite.value = true;
-      }
+      _isLoading.value = true;
+      _errorMessage.value = '';
+      await _repository.insertFavRecipe(recipeId, userId);
+      _isFavorite.value = true;
     } catch (e) {
-      _errorMessage.value = e.toString();
+      _errorMessage.value =
+          'Falha ao adicionar receita favorita: ${e.toString()}';
     } finally {
-      _busy = false;
+      _isLoading.value = false;
+    }
+  }
+
+  Future<void> removeFromFavorites(String recipeId, String userId) async {
+    try {
+      _isLoading.value = true;
+      _errorMessage.value = '';
+      await _repository.deleteFavRecipe(recipeId, userId);
+      _isFavorite.value = false;
+    } catch (e) {
+      _errorMessage.value =
+          'Falha ao remover receita favorita: ${e.toString()}';
+    } finally {
+      _isLoading.value = false;
     }
   }
 }
