@@ -29,6 +29,6 @@ Future<void> setupDependencies() async {
   );
   getIt.registerLazySingleton<FavRecipesViewModel>(() => FavRecipesViewModel());
   getIt.registerLazySingleton<AuthViewModel>(() => AuthViewModel());
+  getIt.registerLazySingleton<ProfileViewModel>(() => ProfileViewModel());
 }
 
-class RecipesViewModel {}

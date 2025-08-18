@@ -1,10 +1,13 @@
-import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/data/models/recipe.dart';
+import 'package:app4_receitas/data/repositories/auth_repository.dart';
 import 'package:app4_receitas/data/repositories/recipe_repository.dart';
+import 'package:app4_receitas/di/service_locator.dart';
+import 'package:either_dart/either.dart';
 import 'package:get/get.dart';
 
 class FavRecipesViewModel extends GetxController {
   final _repository = getIt<RecipeRepository>();
+  final _authRepository = getIt<AuthRepository>();
 
   final RxList<Recipe> _favRecipes = <Recipe>[].obs;
   final RxBool _isLoading = false.obs;
@@ -19,7 +22,10 @@ class FavRecipesViewModel extends GetxController {
     try {
       _isLoading.value = true;
       _errorMessage.value = '';
-      final userId = 'e9d443fa-ab43-45d7-a52b-44f0300d5ea9';
+      var userId = '';
+      await _authRepository.currentUser.fold((left) => _errorMessage.value = left.message, 
+      (right) =>  userId = right.id,
+      );
       _favRecipes.value = await _repository.getFavRecipes(userId);
     } catch (e) {
       _errorMessage.value = 'Falha ao buscar receitas: ${e.toString()}';

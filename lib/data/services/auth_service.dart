@@ -1,4 +1,4 @@
-import 'package:app4_receitas/data/di/service_locator.dart';
+import 'package:app4_receitas/di/service_locator.dart';
 import 'package:app4_receitas/utils/app_error.dart';
 import 'package:either_dart/either.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -6,10 +6,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthService {
   final SupabaseClient _supabaseClient = getIt<SupabaseClient>();
 
-  // Retorna o usuário atual
   User? get currentUser => _supabaseClient.auth.currentUser;
 
-  // Sign in com email e password
+  Stream<AuthState> get authStateChanges =>
+      _supabaseClient.auth.onAuthStateChange;
+
   Future<Either<AppError, AuthResponse>> signInWithPassword({
     required String email,
     required String password,
@@ -23,9 +24,7 @@ class AuthService {
     } on AuthException catch (e) {
       switch (e.message) {
         case 'Invalid login credentials':
-          return Left(
-            AppError('Usuário não cadastrado ou credenciais inválidas'),
-          );
+          return Left(AppError('Usuário não cadastrado ou credenciais inválidas'));
         case 'Email not confirmed':
           return Left(AppError('E-mail não confirmado'));
         default:
@@ -34,7 +33,6 @@ class AuthService {
     }
   }
 
-  // Retorna os valores da tabela profile
   Future<Either<AppError, Map<String, dynamic>?>> fetchUserProfile(
     String userId,
   ) async {
@@ -50,6 +48,57 @@ class AuthService {
     }
   }
 
-  // Sign Up - Registro de novo usuário
-  // * _supabase.auth.signUp() -> Tabela Users
+  Future<Either<AppError, AuthResponse>> signUp({
+    required String email,
+    required String password,
+    required String username,
+    required String avatarUrl,
+  }) async {
+    try {
+      final existingUsername = await _supabaseClient
+          .from('profiles')
+          .select()
+          .eq('username', username)
+          .maybeSingle();
+
+      if (existingUsername != null) {
+        return Left(AppError('Username não disponível'));
+      }
+
+      final response = await _supabaseClient.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      if (response.user == null) {
+        return Left(AppError('Erro ao criar usuário no auth'));
+      }
+
+      await _supabaseClient.from('profiles').insert({
+        'id': response.user!.id,
+        'username': username,
+        'avatar_url': avatarUrl,
+      });
+
+      return Right(response);
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') {
+        return Left(AppError('E-mail já registrado'));
+      }
+      return Left(AppError('Erro ao registrar usuário', e));
+    } catch (e) {
+      return Left(AppError('Erro inesperado ao registrar usuário', e));
+    }
+  }
+
+  Future<Either<AppError, void>> singOut() async {
+    try {
+      await _supabaseClient.auth.signOut();
+      return Right(null);
+    } on AuthException catch (e) {
+      return Left(AppError('Erro ao sair', e));
+    } catch (e) {
+      return Left(AppError('Erro inesperado ao sair', e));
+    }
+  }
 }

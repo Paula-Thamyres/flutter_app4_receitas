@@ -1,8 +1,8 @@
-import 'package:app4_receitas/data/di/service_locator.dart';
-import 'package:app4_receitas/ui/auth/auth_viewmodel.dart';
+import 'package:app4_receitas/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'auth_viewmodel.dart';
 
 class AuthView extends StatefulWidget {
   const AuthView({super.key});
@@ -40,6 +40,10 @@ class _AuthViewState extends State<AuthView> {
                       const SizedBox(height: 16),
                       _buildAvatarUrlField(),
                     ],
+                    const SizedBox(height: 32),
+                    _buildErrorMessage(),
+                    const SizedBox(height: 16),
+                    _buildSuccessMessage(),
                     const SizedBox(height: 32),
                     _buildSubmitButton(),
                     const SizedBox(height: 32),
@@ -170,6 +174,56 @@ class _AuthViewState extends State<AuthView> {
     );
   }
 
+  Widget _buildErrorMessage() {
+    return Obx(
+      () => Visibility(
+        visible: viewModel.errorMessage.isNotEmpty,
+        child: Text(
+          viewModel.errorMessage,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.error,
+            fontSize: 16,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuccessMessage() {
+    return Obx(
+      () => AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: viewModel.isSuccess
+            ? Container(
+                key: const ValueKey('success-message'),
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.green),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.check_circle, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text(
+                      'Cadastro realizado com sucesso!',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink(key: ValueKey('empty')),
+      ),
+    );
+  }
+
   Widget _buildSubmitButton() {
     return SizedBox(
       height: 50,
@@ -190,10 +244,7 @@ class _AuthViewState extends State<AuthView> {
               )
             : Text(
                 viewModel.isLoginMode ? 'ENTRAR' : 'CADASTRAR',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
       ),
     );

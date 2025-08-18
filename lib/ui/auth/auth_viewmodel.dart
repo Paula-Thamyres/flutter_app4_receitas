@@ -1,38 +1,33 @@
-import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/data/repositories/auth_repository.dart';
+import 'package:app4_receitas/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthViewModel extends GetxController {
   final _repository = getIt<AuthRepository>();
 
-  // Form
   final formKey = GlobalKey<FormState>();
-
-  // Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final usernameController = TextEditingController();
   final avatarUrlController = TextEditingController();
 
-  // Estados
   final _obscurePassword = true.obs;
   final _isSubmitting = false.obs;
   final _isLoginMode = true.obs;
   final _errorMessage = ''.obs;
+  final _isSuccess = false.obs;
 
-  // Getters
   bool get obscurePassword => _obscurePassword.value;
   bool get isSubmitting => _isSubmitting.value;
   bool get isLoginMode => _isLoginMode.value;
   String get errorMessage => _errorMessage.value;
+  bool get isSuccess => _isSuccess.value;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Informe o e-mail';
-    if (!RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
-    ).hasMatch(value)) {
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(value)) {
       return 'E-mail inválido';
     }
     return null;
@@ -64,16 +59,13 @@ class AuthViewModel extends GetxController {
 
   String? validateAvatarUrl(String? value) {
     if (value == null || value.isEmpty) return 'Informe a URL do avatar';
-    if (!RegExp(
-      r'^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$',
-    ).hasMatch(value)) {
+    if (!RegExp(r'^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$').hasMatch(value)) {
       return 'URL inválida';
     }
     return null;
   }
 
-  void toggleObscurePassword() =>
-      _obscurePassword.value = !_obscurePassword.value;
+  void toggleObscurePassword() => _obscurePassword.value = !_obscurePassword.value;
 
   Future<void> submit() async {
     final valid = formKey.currentState?.validate() ?? false;
@@ -84,6 +76,7 @@ class AuthViewModel extends GetxController {
     } else {
       await register();
     }
+    _isSubmitting.value = false;
   }
 
   Future<void> login() async {
@@ -91,20 +84,33 @@ class AuthViewModel extends GetxController {
       email: emailController.text,
       password: passwordController.text,
     );
-    response.fold(
-      (left) {
-        _errorMessage.value = left.message;
-        print(errorMessage);
-      },
-      (right) {
-        print(right);
-        return;
-      },
-    );
+    response.fold((left) {
+      _errorMessage.value = left.message;
+      _isSuccess.value = false;
+    }, (right) {
+      _errorMessage.value = '';
+      _isSuccess.value = false;
+    });
   }
 
   Future<void> register() async {
-    // TODO: lógica para registro
+    final response = await _repository.signUp(
+      email: emailController.text,
+      password: passwordController.text,
+      username: usernameController.text,
+      avatarUrl: avatarUrlController.text,
+    );
+
+    response.fold((left) {
+      _errorMessage.value = left.message;
+      _isSuccess.value = false;
+    }, (right) async {
+      _errorMessage.value = '';
+      _isSuccess.value = true;
+      await Future.delayed(const Duration(seconds: 2));
+      _isSuccess.value = false;
+      toggleMode();
+    });
   }
 
   @override
@@ -122,9 +128,6 @@ class AuthViewModel extends GetxController {
     _isSubmitting.value = false;
     _clearFields();
     _obscurePassword.value = true;
-
-    // * update
-    // Necessário para atualizar a UI
     update();
   }
 
