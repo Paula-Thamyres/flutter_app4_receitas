@@ -1,4 +1,4 @@
-import 'package:app4_receitas/di/service_locator.dart';
+import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/utils/app_error.dart';
 import 'package:either_dart/either.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +24,9 @@ class AuthService {
     } on AuthException catch (e) {
       switch (e.message) {
         case 'Invalid login credentials':
-          return Left(AppError('Usuário não cadastrado ou credenciais inválidas'));
+          return Left(
+            AppError('Usuário não cadastrado ou credenciais inválidas'),
+          );
         case 'Email not confirmed':
           return Left(AppError('E-mail não confirmado'));
         default:
@@ -48,7 +50,15 @@ class AuthService {
     }
   }
 
-  Future<Either<AppError, AuthResponse>> signUp({
+  late Future<Either<AppError, AuthResponse>> s;
+
+  Future signUp({
+    required String email,
+    required String password,
+    required String username,
+    required String avatarUrl,
+  }) async {}
+  ignUp({
     required String email,
     required String password,
     required String username,

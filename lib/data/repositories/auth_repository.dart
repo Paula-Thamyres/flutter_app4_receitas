@@ -1,6 +1,6 @@
+import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/data/models/user_profile.dart';
-import 'package:app4_receitas/data/services/auth_services.dart';
-import 'package:app4_receitas/di/service_locator.dart';
+import 'package:app4_receitas/data/services/auth_service.dart';
 import 'package:app4_receitas/utils/app_error.dart';
 import 'package:either_dart/either.dart';
 import 'package:get/get.dart';
@@ -59,7 +59,7 @@ class AuthRepository extends GetxController {
   }
 
   Future<Either<AppError, void>> singOut() async {
-    final result = await _service.singOut();
+    final result = await _service.singOut() ;
     return result.fold((left) => Left(left), (right) => const Right(null));
   }
 }

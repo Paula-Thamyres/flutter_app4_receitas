@@ -17,25 +17,25 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
-    switch(index) {
+    switch (index) {
       case 0:
-      setState(() => _currentIndex = 0);
-      GoRouter.of(context).go('/');
-      break;
+        setState(() => _currentIndex = 0);
+        GoRouter.of(context).go('/');
+        break;
 
       case 1:
-      setState(() => _currentIndex = 1);
-      GoRouter.of(context).go('/favorites');
-      break;
+        setState(() => _currentIndex = 1);
+        GoRouter.of(context).go('/favorites');
+        break;
 
       case 2:
-      setState(() => _currentIndex = 2);
-      GoRouter.of(context).go('/profile');
-      break;
+        setState(() => _currentIndex = 2);
+        GoRouter.of(context).go('/profile');
+        break;
 
       case 3:
         theme.toogleTheme();
-      break;
+        break;
     }
   }
 
@@ -43,6 +43,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      selectedItemColor: Theme.of(context).colorScheme.onError,
       items: [
         const BottomNavigationBarItem(
           icon: Icon(Icons.restaurant_menu),
@@ -59,7 +60,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         BottomNavigationBarItem(
           icon: Obx(() {
             return theme.isDark.value
-                ? const Icon(Icons.nightlight_round_sharp, size: 24,)   // quando estiver no tema escuro
+                ? const Icon(
+                    Icons.nightlight_round_sharp,
+                    size: 24,
+                  ) // quando estiver no tema escuro
                 : const Icon(Icons.wb_sunny_outlined, size: 24);
           }),
           label: 'Tema',

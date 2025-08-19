@@ -1,4 +1,4 @@
-import 'package:app4_receitas/di/service_locator.dart';
+import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,8 +11,23 @@ class AuthView extends StatefulWidget {
   State<AuthView> createState() => _AuthViewState();
 }
 
-class _AuthViewState extends State<AuthView> {
+class _AuthViewState extends State<AuthView>
+    with SingleTickerProviderStateMixin {
   final viewModel = getIt<AuthViewModel>();
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    _animation = Tween(begin: 50.0, end: 200.0).animate(_animationController);
+    _animationController.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +78,7 @@ class _AuthViewState extends State<AuthView> {
       children: [
         Icon(
           Icons.restaurant_menu,
-          size: 80,
+          size: _animation.value,
           color: Theme.of(context).colorScheme.primary,
         ),
         const SizedBox(height: 16),
@@ -244,7 +259,10 @@ class _AuthViewState extends State<AuthView> {
               )
             : Text(
                 viewModel.isLoginMode ? 'ENTRAR' : 'CADASTRAR',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
       ),
     );

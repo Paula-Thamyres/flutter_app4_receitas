@@ -1,4 +1,4 @@
-import 'package:app4_receitas/di/service_locator.dart';
+import 'package:app4_receitas/data/di/service_locator.dart';
 import 'package:app4_receitas/ui/profile/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
