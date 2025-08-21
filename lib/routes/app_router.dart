@@ -16,9 +16,7 @@ class AppRouter {
 
   late final ValueNotifier<bool> _authStateNotifier;
 
-
   AppRouter() {
-
     _authStateNotifier = ValueNotifier<bool>(_service.currentUser != null);
 
     _service.authStateChanges.listen((state) async {
@@ -37,10 +35,16 @@ class AppRouter {
             GoRoute(
               path: '/recipe/:id',
               builder: (context, state) =>
-                  RecipeDetailView(id: state.pathParameters['id']!),
+                  RecipeDetailsView(id: state.pathParameters['id']!),
             ),
-            GoRoute(path: '/favorites', builder: (context, state) => FavRecipesView()),
-            GoRoute(path: '/profile', builder: (context, state) => ProfileView()),
+            GoRoute(
+              path: '/favorites',
+              builder: (context, state) => FavRecipesView(),
+            ),
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => ProfileView(),
+            ),
           ],
         ),
       ],
@@ -57,8 +61,7 @@ class AppRouter {
         }
 
         return null;
-
-      }
+      },
     );
   }
 }
