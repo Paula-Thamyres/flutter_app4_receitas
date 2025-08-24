@@ -1,5 +1,12 @@
 📘 README.md
 ============================================
+## 👩‍💻 Autora
+
+Desenvolvido por **Paula Thamyres** 💜  
+[GitHub](https://github.com/Paula-Thamyres)
+
+# ======================
+
 # 🍲 App de Receitas com Flutter + Supabase
 
 Aplicativo de receitas desenvolvido em **Flutter**, utilizando **Supabase** para autenticação e armazenamento de dados.  
@@ -125,12 +132,6 @@ Adotamos commits descritivos e com ícones para fácil leitura:
 
 ---
 
-## 👩‍💻 Autora
-
-Desenvolvido por **Paula Thamyres** 💜  
-[GitHub](https://github.com/Paula-Thamyres)
-
-# ======================
 # 🔑 Supabase Config
 
 # URL projeto no Supabase
