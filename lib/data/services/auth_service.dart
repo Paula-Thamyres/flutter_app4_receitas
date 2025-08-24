@@ -58,7 +58,7 @@ class AuthService {
     required String username,
     required String avatarUrl,
   }) async {}
-  ignUp({
+  SignUp({
     required String email,
     required String password,
     required String username,

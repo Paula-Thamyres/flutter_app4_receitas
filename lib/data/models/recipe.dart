@@ -63,6 +63,7 @@ class Recipe {
     );
   }
 
+  // ignore: strict_top_level_inference
   get value => null;
 
   // Recipe -> JSON

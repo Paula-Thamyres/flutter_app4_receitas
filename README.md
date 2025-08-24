@@ -1,6 +1,12 @@
-============================================
 📘 README.md
 ============================================
+## 👩‍💻 Autora
+
+Desenvolvido por **Paula Thamyres** 💜  
+[GitHub](https://github.com/Paula-Thamyres)
+
+# ======================
+
 # 🍲 App de Receitas com Flutter + Supabase
 
 Aplicativo de receitas desenvolvido em **Flutter**, utilizando **Supabase** para autenticação e armazenamento de dados.  
@@ -126,18 +132,7 @@ Adotamos commits descritivos e com ícones para fácil leitura:
 
 ---
 
-## 👩‍💻 Autora
-
-Desenvolvido por **Paula Thamyres** 💜  
-[GitHub](https://github.com/Paula-Thamyres)
-
-
-============================================
-📘 .env.example
-============================================
-# ============================================
 # 🔑 Supabase Config
-# ============================================
 
 # URL projeto no Supabase
 SUPABASE_URL=https://vxdrunmmwoafyokaarfr.supabase.co
@@ -145,9 +140,8 @@ SUPABASE_URL=https://vxdrunmmwoafyokaarfr.supabase.co
 # Chave anônima (anon key) gerada pelo Supabase
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4ZHJ1bm1td29hZnlva2FhcmZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzE0OTYsImV4cCI6MjA3MDAwNzQ5Nn0.iOQQw5VnXvJMSdgTsOC__V47eEgY-7Ym2435W0c5OGo
 
-# ============================================
+# =========================
 # ⚙️ Configurações do App
-# ============================================
 
 # Ambiente atual (development | production)
 APP_ENV=development
@@ -159,9 +153,9 @@ APP_NAME=AppReceitas
 API_BASE_URL=http://localhost:3000
 
 
-============================================
+===============
 📘 .gitignore
-============================================
+
 # Flutter/Dart/Pub related
 .dart_tool/
 .flutter-plugins

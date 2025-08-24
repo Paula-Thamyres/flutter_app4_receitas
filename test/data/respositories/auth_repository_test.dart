@@ -6,11 +6,8 @@ import 'package:either_dart/either.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import './auth_repository_test.mocks.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart'; // para @GenerateMocks
-import 'package:mockito/mockito.dart'; // para when(), verify(), etc
-
-import './auth_repository_test.mocks.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 @GenerateMocks([AuthService])
 void main() {
@@ -229,7 +226,6 @@ void main() {
       });
     });
 
-    // TODO: signUp e signOut
     group('signUp', () {});
     group('signOut', () {});
   });

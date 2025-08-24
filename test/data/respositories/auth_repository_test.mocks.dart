@@ -119,7 +119,7 @@ class MockAuthService extends _i1.Mock implements _i2.AuthService {
           as _i3.Future<dynamic>);
 
   @override
-  dynamic ignUp({
+  dynamic SignUp({
     required String? email,
     required String? password,
     required String? username,
