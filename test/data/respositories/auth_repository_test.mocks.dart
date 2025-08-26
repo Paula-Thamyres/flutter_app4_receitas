@@ -125,7 +125,7 @@ class MockAuthService extends _i1.Mock implements _i2.AuthService {
     required String? username,
     required String? avatarUrl,
   }) => super.noSuchMethod(
-    Invocation.method(#ignUp, [], {
+    Invocation.method(#SignUp, [], {
       #email: email,
       #password: password,
       #username: username,

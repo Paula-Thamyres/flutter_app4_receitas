@@ -14,19 +14,36 @@ class AuthView extends StatefulWidget {
 class _AuthViewState extends State<AuthView>
     with SingleTickerProviderStateMixin {
   final viewModel = getIt<AuthViewModel>();
+
   late AnimationController _animationController;
-  late Animation<double> _animation;
+  // late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
+    // )..addStatusListener((listener) {
+    //   if (listener == AnimationStatus.completed) {
+    //     _animationController.reverse();
+    //   } else if (listener == AnimationStatus.dismissed) {
+    //     _animationController.forward();
+    //   }
+    // });
 
-    _animation = Tween(begin: 50.0, end: 200.0).animate(_animationController);
+    // _animation = Tween(begin: 50.0, end: 200.0).animate(_animationController);
+    // _animation.addListener(() => setState(() {}));
+
     _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,8 +74,6 @@ class _AuthViewState extends State<AuthView>
                     ],
                     const SizedBox(height: 32),
                     _buildErrorMessage(),
-                    const SizedBox(height: 16),
-                    _buildSuccessMessage(),
                     const SizedBox(height: 32),
                     _buildSubmitButton(),
                     const SizedBox(height: 32),
@@ -76,11 +91,7 @@ class _AuthViewState extends State<AuthView>
   Widget _buildHeader() {
     return Column(
       children: [
-        Icon(
-          Icons.restaurant_menu,
-          size: _animation.value,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        _animatedLogo(controller: _animationController),
         const SizedBox(height: 16),
         Text(
           'Eu Amo Cozinhar',
@@ -98,8 +109,46 @@ class _AuthViewState extends State<AuthView>
     );
   }
 
+  Widget _animatedLogo({required AnimationController controller}) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        final sizeTween = Tween(
+          begin: 50.0,
+          end: 200.0,
+        ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+
+        final colorTween =
+            ColorTween(
+              begin: Theme.of(context).colorScheme.onError,
+              end: Theme.of(context).colorScheme.primary,
+            ).animate(
+              CurvedAnimation(parent: controller, curve: Curves.bounceInOut),
+            );
+
+        final angleTween = Tween(
+          begin: 0.0,
+          end: 2 * 3.14,
+        ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+
+        return Transform.rotate(
+          angle: angleTween.value,
+          child: SizedBox(
+            height: 200,
+            child: Icon(
+              Icons.restaurant_menu,
+              size: sizeTween.value,
+              color: colorTween.value,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildEmailField() {
     return TextFormField(
+      key: ValueKey('emailField'),
       controller: viewModel.emailController,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
@@ -116,6 +165,7 @@ class _AuthViewState extends State<AuthView>
   Widget _buildPasswordField() {
     return Obx(
       () => TextFormField(
+        key: ValueKey('passwordField'),
         controller: viewModel.passwordController,
         obscureText: viewModel.obscurePassword,
         textInputAction: TextInputAction.done,
@@ -205,44 +255,11 @@ class _AuthViewState extends State<AuthView>
     );
   }
 
-  Widget _buildSuccessMessage() {
-    return Obx(
-      () => AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: viewModel.isSuccess
-            ? Container(
-                key: const ValueKey('success-message'),
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.green),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.check_circle, color: Colors.green),
-                    SizedBox(width: 8),
-                    Text(
-                      'Cadastro realizado com sucesso!',
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : const SizedBox.shrink(key: ValueKey('empty')),
-      ),
-    );
-  }
-
   Widget _buildSubmitButton() {
     return SizedBox(
       height: 50,
       child: ElevatedButton(
+        key: ValueKey('submitButton'),
         onPressed: viewModel.submit,
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -252,10 +269,13 @@ class _AuthViewState extends State<AuthView>
           foregroundColor: Theme.of(context).colorScheme.onPrimary,
         ),
         child: viewModel.isSubmitting
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               )
             : Text(
                 viewModel.isLoginMode ? 'ENTRAR' : 'CADASTRAR',
