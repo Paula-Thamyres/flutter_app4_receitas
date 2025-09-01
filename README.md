@@ -1,19 +1,17 @@
-📘 README.md
-============================================
+# 🍲 App de Receitas com Flutter + Supabase
+
+Aplicativo de receitas desenvolvido em **Flutter**, utilizando **Supabase** para autenticação e armazenamento de dados.  
+O projeto segue uma arquitetura organizada em camadas para facilitar a manutenção, escalabilidade e testes.  
+Além do desenvolvimento, realizei também todo o processo de **deploy para produção**, incluindo a configuração de chaves de assinatura e a geração do **APK assinado**, pronto para publicação.
+
+---
+
 ## 👩‍💻 Autora
 
 Desenvolvido por **Paula Thamyres** 💜  
 [GitHub](https://github.com/Paula-Thamyres)
 
-# ======================
-
-# 🍲 App de Receitas com Flutter + Supabase
-
-Aplicativo de receitas desenvolvido em **Flutter**, utilizando **Supabase** para autenticação e armazenamento de dados.  
-O projeto segue uma arquitetura organizada em camadas para facilitar a manutenção, escalabilidade e testes.
-
 ---
-
 ## 🚀 Tecnologias Utilizadas
 
 - [Flutter](https://flutter.dev/) — Framework para desenvolvimento multiplataforma  
@@ -100,6 +98,24 @@ flutter run
 
 ---
 
+## 📦 Deploy e Geração de APK
+
+Durante o processo de entrega, realizei todas as etapas para preparar a aplicação para produção:
+
+  1. Criação e configuração do keystore para assinatura do app.
+
+  2. Ajuste do arquivo key.properties e integração no Gradle.
+
+  3. Build otimizado por arquitetura:
+```bash
+flutter build apk --split-per-abi
+```
+  4. Resultado: APK assinado gerado com sucesso, pronto para ser instalado em dispositivos Android ou publicado na Play Store.
+
+  ➡️ Esse processo garante segurança, versionamento adequado e compatibilidade com múltiplos dispositivos.
+
+---
+
 ## 🛠️ Estrutura de Branches
 
 - `main` → versão estável  
@@ -129,6 +145,7 @@ Adotamos commits descritivos e com ícones para fácil leitura:
 - O arquivo **`.gitignore`** já está configurado para ignorar build, cache, configurações locais e `.env`.  
 - Sempre mantenha o **`.env`** fora do versionamento para proteger as chaves sensíveis.  
 - Estrutura organizada para facilitar evolução e manutenção.
+- O projeto foi desenvolvido do zero até a entrega em produção, incluindo o build final assinado.
 
 ---
 
